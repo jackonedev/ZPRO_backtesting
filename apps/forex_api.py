@@ -4,7 +4,7 @@ import requests
 import pandas as pd
 
 
-def fx_price(function, from_symbol, to_symbol, api_key, output_size="full"):
+def fx_price(function, from_symbol, to_symbol, api_key, outputsize="full"):
     """API SERVICE OF ALPHA VANTAGE
 
     Keyword arguments:
@@ -12,7 +12,7 @@ def fx_price(function, from_symbol, to_symbol, api_key, output_size="full"):
     from_symbol: first asset
     to_symbol: second asset
     api_key: personal TOKEN
-    output_size: "full", "compact", 
+    outputsize: "full", "compact", 
     Return: pandas.DataFrame
     """
 
@@ -21,18 +21,12 @@ def fx_price(function, from_symbol, to_symbol, api_key, output_size="full"):
     to_symbol = to_symbol
     api_key = api_key
 
-    URL_BASE = "https://www.alphavantage.co/"
+    URL_BASE = "https://www.alphavantage.co/query"
 
-    URL = URL_BASE + "query?function=" + function
-    URL += "&from_symbol=" + from_symbol
-    URL += "&to_symbol=" + to_symbol
-    URL += "&outputsize=" + output_size
-    URL += "&apikey=" + api_key
+    parametros = {'function': function, 'from_symbol': from_symbol, 'to_symbol':to_symbol,'outputsize':outputsize, 'apikey': api_key}
 
-    r = requests.get(URL)
+    r = requests.get(URL_BASE, params=parametros)
     data = r.json()
-
-    # Acá podría caber un context manager
 
     if function == "FX_DAILY":
         data = pd.DataFrame(data["Time Series FX (Daily)"]).T
@@ -54,5 +48,5 @@ if __name__ == "__main__":
 
     load_dotenv()
     TOKEN = os.environ["TOKEN_AV"]
-    data = alpha_vantage_fx_api("FX_MONTHLY", "EUR", "USD", TOKEN)
+    data = fx_price("FX_MONTHLY", "EUR", "USD", TOKEN)
     pprint(data)
