@@ -4,7 +4,7 @@ import requests
 import pandas as pd
 
 
-def alpha_vantage_fx_api(function, from_symbol, to_symbol, api_key, output_size="full"):
+def fx_price(function, from_symbol, to_symbol, api_key, output_size="full"):
     """API SERVICE OF ALPHA VANTAGE
 
     Keyword arguments:
