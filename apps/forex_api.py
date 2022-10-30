@@ -1,3 +1,5 @@
+"""https://www.alphavantage.co/documentation/"""
+
 import os
 from dotenv import load_dotenv  # remember: pip install python-dotenv
 import requests
@@ -15,11 +17,6 @@ def fx_price(function, from_symbol, to_symbol, api_key, outputsize="full"):
     outputsize: "full", "compact", 
     Return: pandas.DataFrame
     """
-
-    function = function
-    from_symbol = from_symbol
-    to_symbol = to_symbol
-    api_key = api_key
 
     URL_BASE = "https://www.alphavantage.co/query"
 
@@ -43,10 +40,37 @@ def fx_price(function, from_symbol, to_symbol, api_key, outputsize="full"):
     return data
 
 
+
+
+def fx_it(function, symbol, interval, apikey=None, **kargs):
+    URL_BASE = "https://www.alphavantage.co/query"
+    parametros = {'function':function, 'symbol':symbol, 'interval':interval,
+    **kargs,
+    'apikey':apikey
+    }
+
+    r = requests.get(URL_BASE, params=parametros)
+    try:
+        js = r.json()[f"Technical Analysis: {function}"]
+        df = pd.DataFrame.from_dict(js, orient='index')
+        df = df.astype(float)
+        df.index.name = "Date"
+        df = df.sort_values('Date', ascending=True).round(3)
+        df.index = pd.to_datetime(df.index)
+    except Exception as e:
+        print (f"Exception: {e}")
+        df = pd.DataFrame()
+        print (r.json())
+    except:
+        df = pd.DataFrame()
+        print (r.json())
+    return df
+
 if __name__ == "__main__":
     from pprint import pprint
 
     load_dotenv()
     TOKEN = os.environ["TOKEN_AV"]
     data = fx_price("FX_MONTHLY", "EUR", "USD", TOKEN)
+    macdext = fx_it(function="MACDEXT", symbol="EURUSD", interval="daily", series_type="close", fast_period=12, slow_period=26, signal_period=9, apikey=TOKEN)
     pprint(data)
