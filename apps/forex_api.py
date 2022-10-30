@@ -4,7 +4,7 @@ import requests
 import pandas as pd
 
 
-def alpha_vantage_fx_api(function, from_symbol, to_symbol, api_key):
+def alpha_vantage_fx_api(function, from_symbol, to_symbol, api_key, output_size="full"):
     """API SERVICE OF ALPHA VANTAGE
 
     Keyword arguments:
@@ -12,6 +12,7 @@ def alpha_vantage_fx_api(function, from_symbol, to_symbol, api_key):
     from_symbol: first asset
     to_symbol: second asset
     api_key: personal TOKEN
+    output_size: "full", "compact", 
     Return: pandas.DataFrame
     """
 
@@ -25,6 +26,7 @@ def alpha_vantage_fx_api(function, from_symbol, to_symbol, api_key):
     URL = URL_BASE + "query?function=" + function
     URL += "&from_symbol=" + from_symbol
     URL += "&to_symbol=" + to_symbol
+    URL += "&outputsize=" + output_size
     URL += "&apikey=" + api_key
 
     r = requests.get(URL)
