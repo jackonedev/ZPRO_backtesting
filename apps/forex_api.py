@@ -1,9 +1,11 @@
 """https://www.alphavantage.co/documentation/"""
+#TODO: finnhub documentation
 
 import os
 from dotenv import load_dotenv  # remember: pip install python-dotenv
 import requests
 import pandas as pd
+from datetime import datetime
 
 
 def fx_price(function, from_symbol, to_symbol, api_key, outputsize="full"):
@@ -66,11 +68,52 @@ def fx_it(function, symbol, interval, apikey=None, **kargs):
         print (r.json())
     return df
 
+
+
+def fx_get_exchanges(TOKEN):
+    url = "https://finnhub.io/api/v1/forex/exchange"
+    r = requests.get(url, params={'token': TOKEN})
+    js = r.json()
+    return js
+
+def fx_exchange_symbols(exchange, TOKEN):
+    url = "https://finnhub.io/api/v1/forex/symbol"
+    p = {'token': TOKEN, 'exchange': exchange}
+    r = requests.get(url, params=p)
+    js = r.json()
+    return js
+
+# def fx_symbol_candles(exchange, symbol, interval, fromS, toS, TOKEN):
+# NECESITA SERVICIO PREMIUN PARA USAR EL ENDPOINT
+#     s = exchange + ':' + symbol
+#     fromDT = datetime.strptime(fromS, '%Y-%m-%d')
+#     fromTS = int(datetime.timestamp(fromDT))
+#     toDT = datetime.strptime(toS, '%Y-%m-%d')
+#     toTS = int(datetime.timestamp(toDT))
+
+#     url = "https://finnhub.io/api/v1/forex/candle"
+#     p = {'token':TOKEN, 'symbol': s, 'resolution':interval, 'from':fromTS, 'to':toTS}
+#     r = requests.get(url, params=p)
+#     js = r.json()
+
+#     # df = pd.DataFrame(js)
+#     return js
+
+
 if __name__ == "__main__":
     from pprint import pprint
 
     load_dotenv()
     TOKEN = os.environ["TOKEN_AV"]
-    data = fx_price("FX_MONTHLY", "EUR", "USD", TOKEN)
-    macdext = fx_it(function="MACDEXT", symbol="EURUSD", interval="daily", series_type="close", fast_period=12, slow_period=26, signal_period=9, apikey=TOKEN)
-    pprint(data)
+    # data = fx_price("FX_MONTHLY", "EUR", "USD", TOKEN)
+    # macdext = fx_it(function="MACDEXT", symbol="EURUSD", interval="daily", series_type="close", fast_period=12, slow_period=26, signal_period=9, apikey=TOKEN)
+    # pprint(data)
+
+    TOKEN2 = os.environ["TOKEN_FH"]
+    # pprint(fx_get_exchanges(TOKEN2))
+    """['oanda', 'fxcm','forex.com', 'icmtrader', 'fxpro', 'pepperstoneuk', 'ic markets', 'fxpig', 'pepperstone']""";
+
+    # pprint (fx_exchange_symbols('fxpro', TOKEN2)) 
+    # OK
+
+    pprint (fx_symbol_candles('fxpro', 'NZD/USD', 60, '2022-01-01', '2022-05-05',TOKEN2))
