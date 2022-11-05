@@ -5,26 +5,33 @@ import pickle
 x1 = count()  # for crear_rotulo_html()
 next(x1)
 
-x2 = count() # for crear_rotulo_csv()
+x2 = count()  # for crear_rotulo_csv()
+fix2, fix2v = True, '' # compuerta, valor
 next(x2)
 
 x4 = count()  # for descargar_objeto()
 next(x4)
 
+
 def descargar_csv(frame, dir_name="csv", prefix="db", suffix=None, fix=None):
     """Recibe un dataframe y los almacena en formato csv"""
-    if fix:
+    global fix2, fix2v
+    if fix and fix2:
         list_dir = os.listdir(dir_name)
-        for file in list_dir:
-            last_index = file[0]
-            fix = str(int(last_index) +1)
+        last_index = list_dir[-1][0]
+        fix = str(int(last_index) + 1)
+        fix2v = fix
+        fix2 = False  # freeze fix to a single position in front
+    elif fix and not fix2:
+        fix = fix2v
 
     frame.to_csv(
         crear_directorio(dir_name)
         + "\\"
         + crear_rotulo_csv(prefix=prefix, suffix=suffix, fix=fix),
-    ) 
-    
+    )
+
+
 
 # def descargar_imagen(obj, dir_name="html", prefix="img", suffix=None):
 #     """Descarga una figure en formato HTML - Valido para plotly library"""
@@ -80,6 +87,7 @@ def string_replace_blank(string):
 #     if suffix is not None:
 #         return f"{next(x1)}_{prefix}_{string_replace_blank(suffix)}.html"
 #     return f"{next(x1)}_{prefix}.html"
+
 
 def crear_rotulo_csv(prefix, suffix, fix=None):
     global x1
