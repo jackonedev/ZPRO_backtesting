@@ -17,8 +17,7 @@ def mining(activo, multiplicador, timespan, TOKEN):
         temporalidad == 'mayor'
 
 
-    iteracion = count()
-    next(iteracion)#for starting in 1
+    iteracion = count(1)
     
     df = fx_symbol_candles(
         activo, multiplicador, timespan, restar_horas(fecha_actual), fecha_actual, TOKEN
@@ -85,10 +84,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
